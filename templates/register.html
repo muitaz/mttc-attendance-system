@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Register — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:820px;margin:0 auto;">
+  <h2 style="margin-top:0;color:#04263b">Create account</h2>
+  <p class="small muted">Choose role and fill required fields.</p>
+
+  <form method="POST" action="{{ url_for('register') }}">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:220px">
+        <label class="small">Role</label>
+        <select id="role" name="role" required>
+          <option value="trainee">Trainee</option>
+          <option value="tutor">Tutor</option>
+        </select>
+      </div>
+
+      <div style="flex:1;min-width:220px">
+        <label class="small">Username</label>
+        <input type="text" name="username" required />
+      </div>
+
+      <div style="flex:1;min-width:220px">
+        <label class="small">Password</label>
+        <input type="password" name="password" required />
+      </div>
+    </div>
+
+    <hr style="margin:12px 0"/>
+
+    <div id="traineeFields">
+      <h4 style="margin:6px 0">Trainee details</h4>
+      <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px">
+          <label class="small">Full name</label>
+          <input type="text" name="full_name" />
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="small">Class</label>
+          <input type="text" name="class" placeholder="e.g. Class 2A" />
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="small">Assessment number</label>
+          <input type="text" name="assessment_number" />
+        </div>
+      </div>
+    </div>
+
+    <div id="tutorFields" style="display:none;margin-top:8px;">
+      <h4 style="margin:6px 0">Tutor details</h4>
+      <div class="form-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px">
+          <label class="small">Full name</label>
+          <input type="text" name="full_name_tutor" />
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="small">Subjects (comma separated)</label>
+          <input type="text" name="subjects" placeholder="e.g. English,Mathematics" />
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="small">Classes (comma separated)</label>
+          <input type="text" name="classes" placeholder="e.g. Class 2A,Class 2B" />
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="btn btn-primary" type="submit">Register</button>
+      <a href="{{ url_for('login') }}" class="btn" style="background:#fff;color:#0b63d9;border-radius:8px">Back to login</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  const roleSelect = document.getElementById('role');
+  const traineeFields = document.getElementById('traineeFields');
+  const tutorFields = document.getElementById('tutorFields');
+  function toggleFields() {
+    if(roleSelect.value === 'tutor') {
+      traineeFields.style.display='none';
+      tutorFields.style.display='block';
+    } else {
+      traineeFields.style.display='block';
+      tutorFields.style.display='none';
+    }
+  }
+  roleSelect.addEventListener('change', toggleFields);
+  toggleFields();
+</script>
+{% endblock %}

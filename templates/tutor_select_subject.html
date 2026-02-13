@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Select Subject — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin:40px auto; padding:30px; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.1); background:#f9f9f9;">
+    <h2 style="color:#04263b; margin-bottom:16px;">Select Subject</h2>
+    <p style="color:#555; margin-bottom:20px;">
+        Please choose the subject you want to manage for your class. Ensure you select the correct subject before proceeding.
+    </p>
+
+    {% if error %}
+        <div style="color:#7f1d1d; background:#fff0f0; padding:10px; border-radius:8px; margin-bottom:12px;">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('tutor_select_subject') }}">
+        <select name="subject" required style="width:100%; padding:10px; border-radius:8px; margin-bottom:20px;">
+            <option value="">-- Choose Subject --</option>
+            {% for s in subjects %}
+                <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary" style="padding:10px 24px; border-radius:8px;">Next</button>
+    </form>
+</div>
+{% endblock %}

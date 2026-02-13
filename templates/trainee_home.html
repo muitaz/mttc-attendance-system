@@ -1,0 +1,85 @@
+{# templates/trainee_home.html #}
+{% extends "base.html" %}
+{% block title %}Trainee Home{% endblock %}
+
+{% block content %}
+<h2 style="margin-top:0;color:#04263b">Welcome, {{ full_name }}</h2>
+<div class="small muted">Assessment: {{ assessment_number }} • Class: {{ trainee_class }}</div>
+
+<!-- Subject progress -->
+<div style="margin-top:12px;">
+  <h4 style="margin:0 0 6px 0;color:#04263b">Subject progress</h4>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    {% for subj, pct in subject_percentages.items() %}
+      <div style="min-width:160px;padding:10px;border-radius:8px;background:white;color:#04263b;">
+        <div style="font-weight:700">{{ subj }}</div>
+        <div class="small">Attendance: {{ pct }}%</div>
+        <div style="height:8px;background:#eef2ff;border-radius:6px;margin-top:8px;">
+          <div style="height:100%;width:{{ pct }}%;background:linear-gradient(90deg,#60a5fa,#0ea5e9);border-radius:6px"></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Active lesson / Mark Present -->
+<div style="margin-top:14px;">
+  {% if active_lesson %}
+    <a class="btn btn-primary" href="{{ url_for('trainee_active_lesson') }}">Join Active Lesson</a>
+    <form method="POST" action="{{ url_for('mark_present_page') }}" style="display:inline;margin-left:8px;">
+      <button class="btn" style="background:#dffcf0;color:#064e2b;border-radius:8px" type="submit">Mark Present</button>
+    </form>
+  {% else %}
+    <div class="small muted">No active lessons for your class right now.</div>
+  {% endif %}
+</div>
+
+<!-- Live token display -->
+<div style="margin-top:20px;">
+  <h4 style="margin-bottom:6px;color:#04263b">Your Current Token</h4>
+  <div id="live-token" style="font-size:18px;font-weight:700;color:#d97706;">Waiting for token...</div>
+</div>
+
+<!-- Optional: Live attendance notifications -->
+<div id="live-attendance" style="margin-top:12px;color:#047857;font-weight:600;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  // Use the socket already defined in base.html
+  const traineeName = "{{ full_name }}";
+  const traineeClass = "{{ trainee_class }}";
+
+  // Join individual room for tokens
+  socket.emit('join_room', { room: traineeName });
+
+  // Join class room for live attendance updates
+  socket.emit('join_class', { class: traineeClass });
+
+  // Listen for new token
+  socket.on('new_token', data => {
+    if (data.trainee === traineeName) {
+      const tokenDiv = document.getElementById('live-token');
+      tokenDiv.textContent = data.token;
+      tokenDiv.style.color = '#16a34a'; // green for active token
+    }
+  });
+
+  // Listen for attendance updates
+  socket.on('attendance_marked', data => {
+    if (data.trainee === traineeName) {
+      const attDiv = document.getElementById('live-attendance');
+      attDiv.textContent = `You were marked present for ${data.subject} in ${data.class}. Current attendance: ${data.percentage}%`;
+    }
+  });
+
+  // Optional: show toast notification for any trainee in the same class
+  socket.on('attendance_marked', data => {
+    if (data.class === traineeClass && data.trainee !== traineeName) {
+      console.log(`${data.trainee} marked present for ${data.subject}`);
+    }
+  });
+</script>
+{% endblock %}

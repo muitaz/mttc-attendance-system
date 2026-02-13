@@ -1,0 +1,16 @@
+{# templates/trainee_active_lesson.html #}
+{% extends "base.html" %}
+{% block title %}Active Lesson{% endblock %}
+{% block content %}
+  <h3 style="margin-top:0;color:#04263b">Live — {{ subject }} ({{ class_name }})</h3>
+  <div class="small muted">Tutor: {{ tutor }}</div>
+  <div style="margin-top:12px;">
+    <div class="panel">
+      <div><strong>Ends at:</strong> {{ session_end }}</div>
+      <div style="margin-top:8px" class="small muted">If you are present click the button below to mark your attendance.</div>
+      <form method="POST" action="{{ url_for('mark_present_page') }}" style="margin-top:10px;">
+        <button class="btn btn-primary" type="submit">I'm Present</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

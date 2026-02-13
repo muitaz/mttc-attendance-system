@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Your Token{% endblock %}
+
+{% block content %}
+<div style="max-width:400px; margin:0 auto; text-align:center;">
+    <h2>Hello {{ session.full_name }}</h2>
+    <p>Your one-time 4-digit token is:</p>
+
+    <h1 id="token-box" style="font-size:48px;color:#0b63d9;">
+        {{ token or "Waiting..." }}
+    </h1>
+
+    <form method="POST" style="margin-top:20px;">
+        <input
+            type="text"
+            name="token"
+            placeholder="Enter token to access dashboard"
+            required
+            maxlength="4"
+            pattern="\d{4}"
+        >
+        <div style="margin-top:12px;">
+            <button class="btn btn-primary" type="submit">
+                Proceed to Dashboard
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    const socket = io();
+
+    // ✅ Stable room = username
+    const room = "{{ session.username }}";
+
+    // ✅ Join room ONLY after socket connects
+    socket.on('connect', () => {
+        socket.emit('join_room', { room });
+        console.log("Joined room:", room);
+    });
+
+    // 🔴 Live token from tutor (NO extra checks needed)
+    socket.on('new_token', data => {
+        const tokenBox = document.getElementById("token-box");
+        tokenBox.textContent = data.token;
+        tokenBox.style.color = "#16a34a"; // green = active
+    });
+
+    // 🟡 Fallback: refresh-safe token fetch
+    fetch("/trainee/latest_token", { cache: "no-store" })
+        .then(res => res.json())
+        .then(data => {
+            if (data.token) {
+                const tokenBox = document.getElementById("token-box");
+                tokenBox.textContent = data.token;
+                tokenBox.style.color = "#16a34a";
+            }
+        });
+</script>
+{% endblock %}

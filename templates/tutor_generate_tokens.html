@@ -1,0 +1,40 @@
+{# templates/tutor_generate_tokens.html #}
+{% extends "base.html" %}
+{% block title %}Generate Tokens — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:700px;margin:0 auto;">
+    <h2 style="color:#04263b;">Generate Tokens for Trainees</h2>
+
+    {% if error %}
+        <p style="color:red;margin:6px 0;">{{ error }}</p>
+    {% endif %}
+    {% if generated %}
+        <p style="color:green;margin:6px 0;">Tokens generated successfully!</p>
+        <table style="width:100%;border-collapse:collapse;margin-top:12px;">
+            <tr style="background:#e6f3ff;">
+                <th style="padding:6px;border:1px solid #ccc;">Trainee Name</th>
+                <th style="padding:6px;border:1px solid #ccc;">Token</th>
+            </tr>
+            {% for name, token in generated.items() %}
+            <tr>
+                <td style="padding:6px;border:1px solid #ccc;">{{ name }}</td>
+                <td style="padding:6px;border:1px solid #ccc;">{{ token }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p style="margin-top:12px;color:#024a7a;">Tokens are valid for {{ config['TOKEN_VALIDITY_MINUTES'] }} minutes and are single-use.</p>
+    {% endif %}
+
+    <form method="POST" style="margin-top:12px;">
+        <label>Select Class:</label>
+        <select name="class_name" required>
+            <option value="">--Choose Class--</option>
+            {% for cls in classes %}
+                <option value="{{ cls }}">{{ cls }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary" style="margin-left:8px;">Generate Tokens</button>
+    </form>
+</div>
+{% endblock %}

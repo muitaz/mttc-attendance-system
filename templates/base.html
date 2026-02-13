@@ -1,0 +1,228 @@
+{# templates/base.html #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>{% block title %}MTTC Attendance{% endblock %}</title>
+
+  <style>
+    :root{
+      --blue:#0b63d9;
+      --accent1:#ff6b6b;
+      --accent2:#ffd93d;
+      --accent3:#6be3b4;
+      --card:#ffffff;
+      --muted:#64748b;
+      --glass: rgba(255,255,255,0.06);
+      --max-width:1100px;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background-color: var(--card);
+      color: #333;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 24px 0 0 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      flex: 1;
+      display: flex;
+      gap: 14px;
+    }
+
+    .navbar{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px ;border-radius:12px;background-color:#87CEEB;
+      color:white;width: 100%;margin-bottom:18px;box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand .logo{
+      width:46px;height:46px;border-radius:0px;background:linear-gradient(135deg,#0ea5e9,#3b82f6);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px;
+      box-shadow:0 4px 10px rgba(11,99,217,0.22);
+    }
+
+    .nav-actions{display:flex;gap:8px;align-items:center}
+    .btn{
+      border:0;padding:8px 12px;border-radius:8px;font-weight:600;cursor:pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);transition:transform .08s ease, box-shadow .1s;
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-refresh{background:linear-gradient(90deg,var(--accent3),#4ade80);color:#00321a}
+    .btn-logout{background:linear-gradient(90deg,var(--accent1),#ff3b3b);color:white}
+    .btn-primary{background:linear-gradient(90deg,#38bdf8,#0ea5e9);color:white}
+    .btn-success{background:linear-gradient(90deg,#34d399,#10b981); color:white}
+    .btn-danger{background:linear-gradient(90deg,#f87171,#ef4444); color:white}
+    .btn-warning{background:linear-gradient(90deg,#facc15,#eab308); color:#04263b}
+
+    .inspirational{
+      padding:10px 14px;border-radius:8px;background:var(--card);color:#073048;font-weight:600;
+      display:flex;align-items:center;gap:10px;min-width:260px;justify-content:space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    main.card{
+      background:#ffffff; 
+      border-radius:12px;padding:18px; color:#04263b;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .main-content {
+      flex: 1;
+    }
+
+    .panel {
+      background: var(--card); 
+      color:#04263b;
+      padding:14px;
+      border-radius:10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      min-width: 280px;
+      max-width: 360px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+      align-self: start;
+    }
+
+    table{width:100%;border-collapse:collapse;}
+    table th, table td{padding:8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+
+    .small{font-size:13px;color:#334155}
+    .flash{padding:10px 12px;border-radius:8px;background:#fff9d9;color:#624200;margin-bottom:12px}
+    .notification{
+      position:fixed;right:20px;bottom:20px;background:#05264d;color:white;padding:12px 16px;border-radius:10px;
+      box-shadow:0 12px 30px rgba(2,6,23,0.3);display:none;z-index:1000;
+    }
+
+    .form-row{display:flex;gap:8px;flex-wrap:wrap}
+    input[type=text],input[type=password],select,textarea{
+      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef8;font-size:14px;
+    }
+    .btn-color{padding:8px 10px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
+    .muted{color:var(--muted)}
+
+    .fade-out {opacity:0; transition:opacity 0.6s ease;}
+
+    footer {
+      text-align:center; 
+      padding:12px; 
+      font-size:14px; 
+      background:var(--card); 
+      color:#04263b;
+      margin-top:auto; /* pushes footer to bottom */
+      border-radius:12px 12px 0 0;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+  </style>
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="School Logo" style="height:60px;width:50px;object-fit:cover;box-shadow:0 4px 10px rgba(0,0,0,0.2)">
+      <div style="margin-left:0px;">
+        <div style="font-weight:800;font-size:20px;color:white">Lesson Attendance System</div>
+        <div style="font-size:16px;color:white;opacity:.9;font-weight:600;">Murang'a Teachers' Training College</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <div class="inspirational" id="inspiration">Keep going — learning today, leading tomorrow.</div>
+      <button class="btn btn-refresh" id="refreshBtn" title="Refresh (stay logged in)">⟳ Refresh</button>
+      <a href="{{ url_for('logout') }}" class="btn btn-logout" title="Log out">⎋ Logout</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="flash">
+        {% for m in messages %}
+          <div>{{ m }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="card">
+    <div class="main-content">
+      {% block content %}{% endblock %}
+    </div>
+
+    <aside class="panel">
+      <h4 style="margin:0 0 8px 0;background:linear-gradient(90deg,var(--accent3),#4ade80);color:#00321a">Quick info</h4>
+      <div class="small">
+        Logged in as: <strong>{{ session.get('full_name','Guest') }}</strong><br/>
+        Role: <strong>{{ session.get('role','-') }}</strong><br/>
+        {% if session.get('trainee_class') %}Class: <strong>{{ session.get('trainee_class') }}</strong>{% endif %}
+        <hr/>
+        <div class="small muted">Tip: Your dreams are valid—keep pushing.</div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="notif" class="notification"></div>
+
+  <!-- SOCKET.IO -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+
+    // Inspiration rotation
+    const messages = [
+      "Keep going — learning today, leading tomorrow.",
+      "Small steps every day make big progress.",
+      "Show up. Focus. Grow.",
+      "Practice beats talent when talent doesn't practice.",
+      "Curiosity is the engine of achievement."
+    ];
+    let idx = 0;
+    const inspEl = document.getElementById('inspiration');
+    setInterval(()=> {
+      idx = (idx+1) % messages.length;
+      if(inspEl) inspEl.textContent = messages[idx];
+    }, 10000);
+
+    // Refresh button
+    document.getElementById('refreshBtn')?.addEventListener('click', ()=> {
+      document.getElementById('refreshBtn').textContent = "⟳ Refreshing...";
+      setTimeout(()=> location.reload(), 200);
+    });
+
+    function showNotif(text, timeout=6000){
+      const n = document.getElementById('notif');
+      n.textContent = text;
+      n.style.display = 'block';
+      setTimeout(()=> n.style.display='none', timeout);
+    }
+
+    socket.on('connect', () => console.log('Socket connected:', socket.id));
+    socket.on('lesson_activated', d => {
+      showNotif(`Live lesson for ${d.class} — ${d.subject} by ${d.tutor}`, 8000);
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+
+  <footer>
+    © {{ current_year or "2026" }} Murang'a Teachers' Training College. All Rights Reserved.
+  </footer>
+</body>
+</html>

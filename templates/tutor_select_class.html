@@ -1,0 +1,52 @@
+{# templates/tutor_select_class.html #}
+{% extends "base.html" %}
+{% block title %}Select Class — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin:0 auto; padding:20px; background:#f9f9f9; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+
+    <h2 style="color:#04263b; margin-top:0;">Subject: {{ subject }}</h2>
+
+    {% if error %}
+        <div style="color:red; margin-bottom:10px;">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('tutor_select_class') }}">
+        <div style="margin-bottom:15px;">
+            <label for="class_name">Choose Class:</label>
+            <select name="class_name" id="class_name" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;">
+                <option value="">-- Select Class --</option>
+                {% for c in classes %}
+                    <option value="{{ c }}" {% if chosen_class == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="submit" name="generate_tokens" value="1" class="btn btn-success" style="padding:10px 20px; border-radius:8px;">
+                Generate Tokens for Trainees
+            </button>
+
+            {% if chosen_class %}
+            <a href="{{ url_for('tutor_summary') }}" class="btn btn-primary" style="padding:10px 20px; border-radius:8px;">
+                Proceed to Lesson Summary
+            </a>
+            {% endif %}
+        </div>
+    </form>
+
+    {% if generated %}
+        <div style="margin-top:20px; padding:15px; background:#e6f3ff; border-radius:8px; max-height:400px; overflow-y:auto;">
+            <h4 style="color:#024a7a; margin-bottom:10px;">Generated Tokens (Visible to trainees pre-login):</h4>
+            <ul style="list-style-type:none; padding-left:0; margin:0;">
+                {% for name, token in generated.items() %}
+                    <li style="margin-bottom:5px; padding:5px 0; border-bottom:1px solid #ccc;">
+                        <strong>{{ name }}</strong>: {{ token }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

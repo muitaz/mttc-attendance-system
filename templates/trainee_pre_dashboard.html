@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Welcome — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:600px;margin:40px auto;padding:30px;border-radius:12px;
+            background: linear-gradient(135deg, #e6f0ff, #cce0ff); text-align:center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <h1 style="color:#0b3d91; margin-bottom:20px;">Welcome {{ session.full_name }}</h1>
+    
+    <p style="font-size:18px; color:#04263b; margin-bottom:15px;">
+        Your tutor has not generated a token yet. Please stay motivated and check back soon! 💪
+    </p>
+    
+    <div style="margin-top:25px;">
+        <img src="{{ url_for('static', filename='images/motivation.png') }}" alt="Stay motivated" 
+             style="max-width:300px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+    </div>
+    
+    <p style="margin-top:25px; font-size:16px; color:#024a7a;">
+        Meanwhile, make sure your profile details are up-to-date.
+    </p>
+
+    <a href="{{ url_for('logout') }}" class="btn btn-logout" style="margin-top:20px; padding:10px 25px; 
+       background:#024a7a;color:#fff;border-radius:8px;text-decoration:none;">Log out</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+const socket = io();
+const room = "{{ session.username }}";  // personal room
+
+// ⚡ Wait for connection first
+socket.on('connect', () => {
+    console.log("Connected to socket, joining room:", room);
+    socket.emit('join_room', { room });
+});
+
+// ⚡ Receive token immediately
+socket.on('new_token', data => {
+    if (data.trainee === "{{ session.full_name }}") {
+        console.log("Received live token:", data.token);
+        // Redirect to token page immediately
+        window.location.href = "/trainee/token";
+    }
+});
+</script>
+{% endblock %}

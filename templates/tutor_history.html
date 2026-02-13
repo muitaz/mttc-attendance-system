@@ -1,0 +1,22 @@
+{# templates/tutor_history.html #}
+{% extends "base.html" %}
+{% block title %}History — {{ subject }}{% endblock %}
+{% block content %}
+  <h3 style="margin-top:0;color:#04263b">History — {{ subject }} ({{ class_name }})</h3>
+
+  <table>
+    <thead><tr><th>Date</th><th>Trainee</th><th>Assessment</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for r in records %}
+        <tr>
+          <td>{{ r.date }}</td>
+          <td>{{ r.trainee }}</td>
+          <td>{{ r.assessment }}</td>
+          <td>{{ r.status }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="4">No records yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

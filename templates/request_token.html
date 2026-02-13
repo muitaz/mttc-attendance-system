@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Request Token — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:400px;margin:0 auto;">
+    <h2 style="margin-top:0;color:#04263b">Request 4-digit Token</h2>
+    {% if message %}
+        <div style="padding:8px;background:#d4edda;color:#155724;border-radius:6px;margin-bottom:12px;">
+            {{ message }}
+        </div>
+    {% endif %}
+    {% if error %}
+        <div style="padding:8px;background:#f8d7da;color:#721c24;border-radius:6px;margin-bottom:12px;">
+            {{ error }}
+        </div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('request_token') }}">
+        <div>
+            <label>Enter your username</label>
+            <input type="text" name="username" required>
+        </div>
+        <div style="margin-top:12px;">
+            <button type="submit" class="btn btn-primary">Request Token</button>
+        </div>
+    </form>
+    <div style="margin-top:12px;">
+        <a href="{{ url_for('login') }}">Back to login</a>
+    </div>
+</div>
+{% endblock %}

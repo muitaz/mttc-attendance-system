@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% block title %}Tutor Dashboard — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:1200px; margin:0 auto; padding:20px;">
+
+    <h2 style="color:#04263b;">
+        Lesson Summary — {{ subject }} | Class: {{ class_name }}
+    </h2>
+
+    <p>
+        <strong>Tutor:</strong> {{ full_name }} |
+        <strong>Date:</strong> {{ current_date }}
+    </p>
+
+    {% if active %}
+    <!-- Live countdown -->
+    <div style="margin:20px 0; padding:12px; background:#e6f3ff; border-radius:8px;">
+        <strong>Lesson ends in:</strong>
+        <span id="countdown" style="font-weight:bold;"></span>
+    </div>
+
+    <script>
+        const sessionEnd = new Date("{{ session_end }}");
+        const countdownElem = document.getElementById("countdown");
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = sessionEnd - now;
+
+            if (diff <= 0) {
+                countdownElem.innerText = "Lesson ended";
+                clearInterval(timer);
+                return;
+            }
+
+            const mins = Math.floor(diff / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+            countdownElem.innerText = `${mins}m ${secs}s`;
+        }
+
+        const timer = setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+
+    {% endif %}
+
+    <!-- ACTION BUTTONS -->
+    <form method="POST" style="margin:20px 0;">
+        <button type="submit" name="action" value="start" class="btn btn-success">Start Lesson</button>
+        <button type="submit" name="action" value="stop" class="btn btn-danger">Stop Lesson</button>
+        <button type="submit" name="action" value="generate_tokens" class="btn btn-warning">Generate Attendance Tokens</button>
+        <button type="submit" name="action" value="export_pdf" class="btn btn-primary">Export PDF</button>
+    </form>
+
+    <!-- LIVE TOKEN DISPLAY -->
+    {% if tokens %}
+    <div style="margin:20px 0; padding:12px; background:#fff7ed; border-radius:8px;">
+        <h4 style="margin-top:0;color:#9a3412;">Generated Tokens</h4>
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="background:#fde68a;">
+                    <th style="padding:6px;">Trainee</th>
+                    <th style="padding:6px;">Token</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, token in tokens.items() %}
+                <tr>
+                    <td style="padding:6px;">{{ name }}</td>
+                    <td style="padding:6px; font-weight:bold;">{{ token }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- ATTENDANCE TABLE -->
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; border:1px solid #ccc;">
+            <thead style="background:#04263b; color:white;">
+                <tr>
+                    <th>Name</th>
+                    <th>Assessment</th>
+                    <th>Attendance %</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary %}
+                <tr style="text-align:center;">
+                    <td>{{ row.Name }}</td>
+                    <td>{{ row.Assessment }}</td>
+                    <td>{{ row['Attendance %'] }}</td>
+                    <td>{{ row.Status }}</td>
+                    <td>{{ row.Date }}</td>
+                    <td>
+                        {% if active %}
+                        <form method="POST" action="{{ url_for('tutor_mark_present', name=row.Name) }}" style="display:inline;">
+                            <button class="btn btn-success btn-sm">Present</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('tutor_mark_absent', name=row.Name) }}" style="display:inline;">
+                            <button class="btn btn-danger btn-sm">Absent</button>
+                        </form>
+                        {% else %}
+                        <em style="color:#777;">Lesson closed</em>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Join the class room so tutor sees live attendance updates
+    const className = "{{ class_name }}";
+    socket.emit('join_class', { class: className });
+
+    // Listen for attendance updates from trainees
+    socket.on('attendance_marked', data => {
+        if (data.class === className) {
+            console.log("Attendance updated:", data);
+            location.reload(); // simple way to refresh table instantly
+        }
+    });
+</script>
+{% endblock %}

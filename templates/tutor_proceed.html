@@ -1,0 +1,27 @@
+{# templates/tutor_proceed.html #}
+{% extends "base.html" %}
+{% block title %}Tutor Dashboard — MTTC{% endblock %}
+
+{% block content %}
+<div style="max-width:600px; margin: 40px auto; padding: 30px; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.1); background:#f9f9f9; text-align:center;">
+    <h2 style="color:#04263b; margin-bottom:12px;">Welcome, {{ full_name }}!</h2>
+    <p style="font-size:1.1em; color:#555; margin-bottom:24px;">
+        You are about to start managing your classes. Please proceed to select a subject and class to continue.
+    </p>
+
+    <div style="margin-top:20px;">
+        <form method="POST" action="{{ url_for('tutor_proceed') }}">
+            <button type="submit" class="btn btn-primary" style="padding:10px 24px; font-size:1em; border-radius:8px;">
+                Proceed to Subject Selection
+            </button>
+        </form>
+    </div>
+
+    <hr style="margin:32px 0; border-color:#ddd;">
+
+    <div style="font-size:0.9em; color:#777;">
+        <p>Remember: You can generate tokens for trainees only after selecting the class.</p>
+        <p>All actions here are logged for accountability.</p>
+    </div>
+</div>
+{% endblock %}

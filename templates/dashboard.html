@@ -1,0 +1,33 @@
+{# templates/dashboard.html #}
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <h2 style="margin-top:0;color:#04263b">Welcome, {{ full_name }}</h2>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;">
+    <div style="min-width:220px;padding:12px;border-radius:10px;background:#ffffffcc;color:#04263b">
+      <div style="font-size:12px" class="small">Role</div>
+      <div style="font-weight:800">{{ role }}</div>
+    </div>
+
+    <div style="min-width:220px;padding:12px;border-radius:10px;background:#ffffffcc;color:#04263b">
+      <div style="font-size:12px" class="small">Active Lesson ID</div>
+      <div style="font-weight:800">{{ lesson_id or '-' }}</div>
+    </div>
+
+    <div style="min-width:220px;padding:12px;border-radius:10px;background:#ffffffcc;color:#04263b">
+      <div style="font-size:12px" class="small">You marked attendance</div>
+      <div style="font-weight:800">{{ 'Yes' if trainee_marked else 'No' }}</div>
+    </div>
+  </div>
+
+  <hr/>
+
+  <div>
+    {% if role == 'tutor' %}
+      <a class="btn btn-primary" href="{{ url_for('tutor_proceed') }}">Proceed as tutor</a>
+    {% else %}
+      <a class="btn btn-primary" href="{{ url_for('trainee_home') }}">Go to trainee home</a>
+    {% endif %}
+  </div>
+{% endblock %}

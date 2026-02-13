@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Lesson Summary PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 40px;
+            color: #04263b;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header img {
+            width: 120px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .school-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .pdf-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0 5px 0;
+            text-decoration: underline;
+        }
+
+        .lesson-info {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #04263b;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #87CEEB;
+            color: #fff;
+        }
+
+        /* PDF-safe signature table */
+        .signature-table {
+            width: 100%;
+            margin-top: 80px;
+        }
+
+        .signature-cell {
+            width: 50%;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        .sign-line {
+            border-top: 1px solid #04263b;
+            margin-top: 50px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sign-label {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ logo_path }}" alt="College Logo">
+        <div class="school-name">{{ school_name }}</div>
+        <div class="pdf-title">Lesson Summary — {{ subject }} | Class: {{ class_name }}</div>
+    </div>
+
+    <div class="lesson-info">
+        <strong>Date:</strong> {{ current_date }}<br>
+        <strong>Tutor:</strong> {{ full_name }}
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Assessment Number</th>
+                <th>Attendance %</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in summary %}
+            <tr>
+                <td>{{ row.Name }}</td>
+                <td>{{ row.Assessment }}</td>
+                <td>{{ row['Attendance %'] }}</td>
+                <td>{{ row.Status }}</td>
+                <td>{{ row.Date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Signatures using a table for horizontal alignment -->
+    <table class="signature-table">
+        <tr>
+            <td class="signature-cell">
+                <div class="sign-line"></div>
+                <div class="sign-label">Tutor Signature</div>
+            </td>
+            <td class="signature-cell">
+                <div class="sign-line"></div>
+                <div class="sign-label">Dean of Curriculum</div>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
