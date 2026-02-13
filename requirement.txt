@@ -31,9 +31,9 @@ et_xmlfile==2.0.0
 python-dateutil==2.9.0.post0
 pytz==2025.2
 
-# PDF generation
+# PDF generation (xhtml2pdf stable for Python 3.11)
 xhtml2pdf==0.2.8
-python-bidi==0.5.8
+python-bidi==0.6.7       # Compatible with Python 3.11
 pypdf==3.11.2
 html5lib==1.1
 reportlab==4.4.5
